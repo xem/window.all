@@ -1,0 +1,51 @@
+<h3>window</h3>
+<script>
+objs = [];
+all = function(obj, deepness){
+  if(obj instanceof Object){
+    var props = [];
+    try{
+      props = Object.getOwnPropertyNames(obj);
+    }
+    catch(e){
+    }
+    for(var i in props){
+      if(props[i] == "caller"){
+        continue;
+      }
+      if(props[i] == "callee"){
+        continue;
+      }
+      if(props[i] == "arguments"){
+        continue;
+      }
+      if(props[i] == "prototype"){
+        continue;
+      }
+      if(obj == window && props[i] == "all"){
+        continue;
+      }
+      if(obj == window && props[i] == "objs"){
+        continue;
+      }
+      if(objs.indexOf(obj[props[i]]) != -1){
+        continue;
+      }
+      if(obj != window && i > 96){ // if we try to show more properties, Chrome hangs. (?!)
+        continue;
+      }
+      for(var j = deepness; j--;){
+        document.write("&nbsp; &nbsp; ");
+      }
+      document.write("<b>."+props[i]+"</b> : " + obj[props[i]] + "<br>");
+      objs.push(obj[props[i]]);
+      if(obj[props[i]] != window && obj[props[i]] != window.document.all){
+        if(deepness < 6){ // if we try to show more sub-objects, Chrome hangs. (?!)
+          all(obj[props[i]], deepness + 1);
+        }
+      }
+    }
+  }
+}
+all(window,1);
+</script>
